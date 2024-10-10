@@ -41,10 +41,10 @@ int main() {
         printf("Could not open directory");
         return 0;
     }
-    char destination[128];  // Adjust the size based on your needs
-    char res[128];  // This should be a character array
+    char destination[128];  
+    char res[128];  
 
-    strcpy(res, "../CS50/.vscode/");
+    strcpy(res, "../Automations/testFolder");
 
     while ((de = readdir(dr)) != NULL) {
         if (strstr(de->d_name, ".cpp")) {
