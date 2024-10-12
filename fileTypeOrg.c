@@ -2,6 +2,8 @@
 #include <dirent.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+
 void moveFile(const char *source, const char *destination) {
     FILE *srcFile, *destFile;
     char ch;
@@ -35,21 +37,26 @@ void moveFile(const char *source, const char *destination) {
 
 int main() {
     struct dirent *de;
-    DIR *dr = opendir("../CS50");
+    char dir[40] = "C:/Users/all/Downloads/";
+    DIR *dr = opendir(dir);
 
     if (dr == NULL) {
-        printf("Could not open directory");
+        printf("Could not open directory\n");
         return 0;
     }
-    char destination[128];  
-    char res[128];  
-
-    strcpy(res, "../Automations/testFolder");
-
+    char execDir[128];
+    snprintf(execDir, sizeof(execDir), "%sExecutables", dir);
+    mkdir(execDir);
+    
     while ((de = readdir(dr)) != NULL) {
-        if (strstr(de->d_name, ".cpp")) {
-            snprintf(destination, sizeof(destination), "%s%s", res, de->d_name);
-            moveFile(de->d_name, destination);
+        if (strstr(de->d_name, ".exe")) {
+            char source[128];
+            snprintf(source, sizeof(source), "%s%s", dir, de->d_name);
+            
+            char destination[128];
+            snprintf(destination, sizeof(destination), "%sExecutables/%s", dir, de->d_name);
+            
+            moveFile(source, destination);
             printf("Moved %s to %s\n", de->d_name, destination);
         }
     }
