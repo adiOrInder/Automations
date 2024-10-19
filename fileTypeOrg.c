@@ -4,55 +4,57 @@
 #include <string.h>
 #include <sys/stat.h>
 
-// Function to move files
 void moveFile(const char *source, const char *destination) {
     FILE *srcFile, *destFile;
     char ch;
 
-    // Open source file for reading
-    srcFile = fopen(source, "r");
+    srcFile = fopen(source, "rb");
     if (srcFile == NULL) {
-        printf("Cannot open source file: %s\n", source);
+        perror("Cannot open source file");
         exit(EXIT_FAILURE);
     }
 
-    // Open destination file for writing
-    destFile = fopen(destination, "w");
+    destFile = fopen(destination, "wb");
     if (destFile == NULL) {
         fclose(srcFile);
-        printf("Cannot open destination file: %s\n", destination);
+        perror("Cannot open destination file");
         exit(EXIT_FAILURE);
     }
 
-    // Copy contents from source to destination
     while ((ch = fgetc(srcFile)) != EOF) {
         fputc(ch, destFile);
     }
 
-    fclose(srcFile);
-    fclose(destFile);
+    if (fclose(srcFile) != 0 || fclose(destFile) != 0) {
+        perror("Error closing file");
+    }
 
-    // Remove the source file
     if (remove(source) != 0) {
-        printf("Error deleting source file: %s\n", source);
+        perror("Error deleting source file");
     } else {
         printf("File moved successfully: %s\n", destination);
     }
 }
 
-// Function to create a directory if it doesn't exist
 void createDir(const char *dir) {
     struct stat st = {0};
     if (stat(dir, &st) == -1) {
-        mkdir(dir);
+#ifdef _WIN32
+        if (_mkdir(dir) != 0) {
+            perror("Error creating directory");
+        }
+#else
+        if (mkdir(dir, 0700) != 0) {
+            perror("Error creating directory");
+        }
+#endif
     }
 }
 
-// Function to move files based on their extension
 void moveFilesByExtension(const char *dir, const char *ext, const char *subDir) {
     DIR *dr = opendir(dir);
     if (dr == NULL) {
-        printf("Could not open directory: %s\n", dir);
+        perror("Could not open directory");
         exit(EXIT_FAILURE);
     }
 
@@ -72,7 +74,9 @@ void moveFilesByExtension(const char *dir, const char *ext, const char *subDir) 
         }
     }
 
-    closedir(dr);
+    if (closedir(dr) != 0) {
+        perror("Error closing directory");
+    }
 }
 
 int main() {
