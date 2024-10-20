@@ -21,7 +21,12 @@ void moveFile(const char *source, const char *destination) {
     }
 
     while ((ch = fgetc(srcFile)) != EOF) {
-        fputc(ch, destFile);
+        if (fputc(ch, destFile) == EOF) {
+            perror("Error writing to destination file");
+            fclose(srcFile);
+            fclose(destFile);
+            exit(EXIT_FAILURE);
+        }
     }
 
     if (fclose(srcFile) != 0 || fclose(destFile) != 0) {
@@ -34,6 +39,7 @@ void moveFile(const char *source, const char *destination) {
         printf("File moved successfully: %s\n", destination);
     }
 }
+
 
 void createDir(const char *dir) {
     struct stat st = {0};

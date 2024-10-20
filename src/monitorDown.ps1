@@ -9,8 +9,8 @@ $action = {
     $name = $Event.SourceEventArgs.Name
     Write-Host "File '$name' has been created in $folder"
 
-    gcc C:/.dotfiles/Automations/main.c -o main
-    .\main.exe
+    gcc "C:/.dotfiles/Automations/main.c"
+    .\a.exe
 }
 
 Register-ObjectEvent $fsw Created -Action $action
