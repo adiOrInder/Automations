@@ -6,7 +6,6 @@ $fsw.IncludeSubdirectories = $false
 $fsw.EnableRaisingEvents = $true
 
 $action = {
-    $path = $Event.SourceEventArgs.FullPath
     $name = $Event.SourceEventArgs.Name
     Write-Host "File '$name' has been created in $folder"
 
