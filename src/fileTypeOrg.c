@@ -31,10 +31,40 @@ void moveFile(const char *source, const char *destination) {
 
     if (fclose(srcFile) != 0 || fclose(destFile) != 0) {
         perror("Error closing file");
+        exit(EXIT_FAILURE);
     }
 
+    srcFile = fopen(source, "rb");
+    destFile = fopen(destination, "rb");
+
+    if (srcFile == NULL || destFile == NULL) {
+        perror("Cannot reopen files for verification");
+        exit(EXIT_FAILURE);
+    }
+
+    while (!feof(srcFile) && !feof(destFile)) {
+        if (fgetc(srcFile) != fgetc(destFile)) {
+            perror("File copy verification failed");
+            fclose(srcFile);
+            fclose(destFile);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    if (!feof(srcFile) || !feof(destFile)) {
+        perror("File sizes do not match");
+        fclose(srcFile);
+        fclose(destFile);
+        exit(EXIT_FAILURE);
+    }
+
+    fclose(srcFile);
+    fclose(destFile);
+
+    // Remove the source file after successful verification
     if (remove(source) != 0) {
         perror("Error deleting source file");
+        exit(EXIT_FAILURE);
     } else {
         printf("File moved successfully: %s\n", destination);
     }
