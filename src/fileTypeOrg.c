@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-
 void moveFile(const char *source, const char *destination) {
     FILE *srcFile, *destFile;
     char ch;
@@ -79,16 +78,4 @@ void moveFilesByExtension(const char *dir, const char *ext, const char *subDir) 
     }
 }
 
-int main() {
-    char dir[] = "C:/Users/all/Downloads";
 
-    // Move executable files
-    moveFilesByExtension(dir, ".exe", "Executables");
-
-    // Move image files
-    moveFilesByExtension(dir, ".png", "Images");
-    moveFilesByExtension(dir, ".jpg", "Images");
-    moveFilesByExtension(dir, ".jpeg", "Images");
-
-    return 0;
-}
