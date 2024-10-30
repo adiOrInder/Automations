@@ -61,7 +61,6 @@ void moveFile(const char *source, const char *destination) {
     fclose(srcFile);
     fclose(destFile);
 
-    // Remove the source file after successful verification
     if (remove(source) != 0) {
         perror("Error deleting source file");
         exit(EXIT_FAILURE);
